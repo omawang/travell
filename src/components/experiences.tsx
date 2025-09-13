@@ -4,29 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, Users } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import Image from "next/image";
 
 export default function Experiences() {
-  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const packages = [
     {
       id: 1,
@@ -73,104 +57,125 @@ export default function Experiences() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <motion.section 
+      ref={sectionRef} 
+      className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className={`text-center mb-12 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Experience Dream Trips
+            Gateway to Amazing Experiences
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover our handpicked travel packages designed to create unforgettable memories
+            Discover handcrafted travel packages designed to create unforgettable memories
           </p>
-        </div>
+        </motion.div>
 
         {/* Packages Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {packages.map((pkg, index) => (
-            <Card 
-              key={pkg.id} 
-              className={`overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-700 hover:scale-105 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-              }`}
-              style={{
-                transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
+            <motion.div
+              key={pkg.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.2,
+                ease: "easeOut" 
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.3 }
               }}
             >
-              <div className="relative">
-                <Image
-                  src={pkg.image}
-                  alt={pkg.title}
-                  width={400}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
-                <Badge className="absolute top-4 left-4 bg-green-600 hover:bg-green-700">
-                  {pkg.badge}
-                </Badge>
-              </div>
-              
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                      {pkg.title}
-                    </h3>
-                    <p className="text-gray-600">{pkg.location}</p>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {pkg.duration}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {pkg.groupSize}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium">{pkg.rating}</span>
-                    </div>
-                    <span className="text-gray-600 text-sm">({pkg.reviews} reviews)</span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {pkg.features.map((feature, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {feature}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div>
-                      <span className="text-2xl font-bold text-green-600">{pkg.price}</span>
-                      <span className="text-gray-500 line-through ml-2">{pkg.originalPrice}</span>
-                      <div className="text-sm text-gray-600">per person</div>
-                    </div>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      Book Now
-                    </Button>
-                  </div>
+              <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
+                <div className="relative">
+                  <Image
+                    src={pkg.image}
+                    alt={pkg.title}
+                    width={400}
+                    height={300}
+                    className="w-full h-48 object-cover"
+                  />
+                  <Badge className="absolute top-4 left-4 bg-green-600 hover:bg-green-700">
+                    {pkg.badge}
+                  </Badge>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                        {pkg.title}
+                      </h3>
+                      <p className="text-gray-600">{pkg.location}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {pkg.duration}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {pkg.groupSize}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-medium">{pkg.rating}</span>
+                      </div>
+                      <span className="text-gray-600 text-sm">({pkg.reviews} reviews)</span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {pkg.features.map((feature, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {feature}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div>
+                        <span className="text-2xl font-bold text-green-600">{pkg.price}</span>
+                        <span className="text-gray-500 line-through ml-2">{pkg.originalPrice}</span>
+                        <div className="text-sm text-gray-600">per person</div>
+                      </div>
+                      <Button className="bg-green-600 hover:bg-green-700">
+                        Book Now
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
         {/* View All Button */}
-        <div className="text-center">
+        <motion.div 
+          className="text-center mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
           <Button variant="outline" size="lg" className="border-green-600 text-green-600 hover:bg-green-50">
             View All Packages
           </Button>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -2,29 +2,13 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, Quote } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Star, MapPin, Calendar, Quote } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 export default function Testimonials() {
-  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const testimonials = [
     {
       id: 1,
@@ -94,77 +78,98 @@ export default function Testimonials() {
   };
 
   return (
-    <section ref={sectionRef} className="py-16 px-4 sm:px-6 lg:px-8 bg-green-50">
+    <motion.section 
+      ref={sectionRef} 
+      className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className={`text-center mb-12 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             What Our Travelers Say
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Read authentic reviews from our satisfied customers who have experienced unforgettable journeys with us
+            Real experiences from real travelers who have journeyed with us
           </p>
-        </div>
+        </motion.div>
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {testimonials.map((testimonial, index) => (
-            <Card 
-              key={testimonial.id} 
-              className={`border-0 shadow-lg hover:shadow-xl transition-all duration-700 bg-white hover:scale-105 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-              }`}
-              style={{
-                transitionDelay: isVisible ? `${index * 150}ms` : '0ms'
+            <motion.div
+              key={testimonial.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.15,
+                ease: "easeOut" 
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.3 }
               }}
             >
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Quote Icon */}
-                  <div className="flex justify-between items-start">
-                    <Quote className="h-8 w-8 text-green-600 opacity-50" />
-                    <div className="flex items-center gap-1">
-                      {renderStars(testimonial.rating)}
-                    </div>
-                  </div>
-
-                  {/* Comment */}
-                  <p className="text-gray-700 leading-relaxed italic">
-                    &ldquo;{testimonial.comment}&rdquo;
-                  </p>
-
-                  {/* Trip Info */}
-                  <div className="text-sm text-green-600 font-medium">
-                    {testimonial.trip}
-                  </div>
-
-                  {/* User Info */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                      <AvatarFallback>
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-semibold text-gray-900">
-                        {testimonial.name}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {testimonial.location}
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full bg-white">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {/* Quote Icon */}
+                    <div className="flex justify-between items-start">
+                      <Quote className="h-8 w-8 text-green-600 opacity-50" />
+                      <div className="flex items-center gap-1">
+                        {renderStars(testimonial.rating)}
                       </div>
                     </div>
+
+                    {/* Comment */}
+                    <p className="text-gray-700 leading-relaxed italic">
+                      &ldquo;{testimonial.comment}&rdquo;
+                    </p>
+
+                    {/* Trip Info */}
+                    <div className="text-sm text-green-600 font-medium">
+                      {testimonial.trip}
+                    </div>
+
+                    {/* User Info */}
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                        <AvatarFallback>
+                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-semibold text-gray-900">
+                          {testimonial.name}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {testimonial.location}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
         {/* Stats Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <motion.div 
+          className="bg-white rounded-2xl shadow-lg p-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold text-green-600 mb-2">50,000+</div>
@@ -183,8 +188,8 @@ export default function Testimonials() {
               <div className="text-gray-600">Years Experience</div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
