@@ -132,7 +132,7 @@ export default function Testimonials() {
 
                   {/* Comment */}
                   <p className="text-gray-700 leading-relaxed italic">
-                    "{testimonial.comment}"
+                    &ldquo;{testimonial.comment}&rdquo;
                   </p>
 
                   {/* Trip Info */}

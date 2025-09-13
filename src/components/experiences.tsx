@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 export default function Experiences() {
   const [isVisible, setIsVisible] = useState(false);
@@ -99,9 +100,11 @@ export default function Experiences() {
               }}
             >
               <div className="relative">
-                <img
+                <Image
                   src={pkg.image}
                   alt={pkg.title}
+                  width={400}
+                  height={300}
                   className="w-full h-48 object-cover"
                 />
                 <Badge className="absolute top-4 left-4 bg-green-600 hover:bg-green-700">

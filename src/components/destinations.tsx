@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 export default function Destinations() {
   const [isVisible, setIsVisible] = useState(false);
@@ -87,7 +88,7 @@ export default function Destinations() {
             Best Destinations For Trip Seekers
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore the world's most beautiful destinations handpicked by our travel experts
+            Explore the world&apos;s most beautiful destinations handpicked by our travel experts
           </p>
         </div>
 
@@ -104,9 +105,11 @@ export default function Destinations() {
               }}
             >
               <div className="relative overflow-hidden">
-                <img
+                <Image
                   src={destination.image}
                   alt={destination.name}
+                  width={500}
+                  height={400}
                   className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300" />
